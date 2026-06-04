@@ -71,7 +71,7 @@ body {
 .header-meta h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
 .system-status { font-size: 0.68rem; color: var(--jarvis-cyan); display: flex; align-items: center; gap: 4px; }
 .system-status svg { width: 10px; height: 10px; }
-.btn-icon-reset { background: transparent; border: none; color: var(--zinc-500); cursor: pointer; }
+.btn-icon-reset { background: transparent; border: none; color: white; cursor: pointer; }
 
 /* VIEWPORT DE SCROLL DO CELULAR */
 .main-viewport {
