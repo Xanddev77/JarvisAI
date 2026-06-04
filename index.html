@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jarvis Mobile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+      <link rel="icon" type="/img/Design sem nome_20260604_174523_0000.png" href="Img/favicon.png">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+    <header class="mobile-header">
+    <div class="header-user-row">
+        <!-- Substituído o badge de texto pela tag de imagem da logo -->
+        <div class="logo-container">
+            <img src="/img/Design sem nome_20260604_174523_0000.png" alt="Logo" class="header-logo">
+        </div>
+        <div class="header-meta">
+            <h1 id="dynamic-greeting">Olá</h1>
+        </div>
+    </div>
+    <button class="btn-icon-reset" id="btn-global-reset" title="Resetar Banco">
+        <i data-lucide="refresh-cw"></i>
+    </button>
+</header>
+
+
+        <main class="main-viewport">
+            
+            <div id="view-overview" class="view-panel active-view">
+                
+                <div class="card card-premium-balance" id="balance-card">
+                    <div class="card-inner-header">
+                        <span class="card-tag">Disponível</span>
+                        <button class="btn-glass-action" id="btn-trigger-budget-modal"><i data-lucide="sliders"></i></button>
+                    </div>
+                    <div class="balance-main-value font-mono" id="net-balance-value">R$ 0,00</div>
+                    
+                    <div class="metrics-subgrid">
+                        <div class="subgrid-col incoming">
+                            <span class="subgrid-label"><i data-lucide="arrow-down-left"></i> Entradas</span>
+                            <span class="subgrid-amount font-mono" id="income-total-value">R$ 0,00</span>
+                        </div>
+                        <div class="subgrid-col outgoing">
+                            <span class="subgrid-label"><i data-lucide="arrow-up-right"></i> Saídas</span>
+                            <span class="subgrid-amount font-mono" id="expense-total-value">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-glassmorph">
+                    <div class="card-inner-header">
+                        <span class="card-tag">Teto Mensal</span>
+                        <div id="budget-status-pill" class="status-pill status-healthy">OK</div>
+                    </div>
+                    <div class="progress-engine-box">
+                        <div class="progress-data-row">
+                            <span id="budget-narrative-text">Sincronizado</span>
+                            <span class="font-mono" id="ceiling-numeric-display">R$ 0,00</span>
+                        </div>
+                        <div class="progress-track-bar">
+                            <div class="progress-fill-bar" id="budget-fill-indicator"></div>
+                        </div>
+                    </div>
+                    <div class="card-extra-metrics-row">
+                        <div class="extra-metric-item">
+                            <span class="emi-label">Segurança</span>
+                            <span class="emi-val font-mono" id="safety-residual-display">100%</span>
+                        </div>
+                        <div class="extra-metric-item">
+                            <span class="emi-label">Risco</span>
+                            <span class="emi-val font-mono text-cyan" id="risk-factor-display">0.0x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-glassmorph">
+                    <span class="card-tag" style="margin-bottom:1rem; display:block;">Distribuição Matriz</span>
+                    <div class="matrix-distribution-wrapper">
+                        <div class="matrix-column">
+                            <div class="matrix-header-info">
+                                <span class="m-title"><i data-lucide="shield"></i> Core (50%)</span>
+                                <span class="m-percentage font-mono" id="matrix-p1">R$ 0,00</span>
+                            </div>
+                            <div class="matrix-visual-bar color-cyan"><div class="mv-fill" id="mv-fill-1"></div></div>
+                        </div>
+                        <div class="matrix-column">
+                            <div class="matrix-header-info">
+                                <span class="m-title"><i data-lucide="activity"></i> Lazer (30%)</span>
+                                <span class="m-percentage font-mono" id="matrix-p2">R$ 0,00</span>
+                            </div>
+                            <div class="matrix-visual-bar color-purple"><div class="mv-fill" id="mv-fill-2"></div></div>
+                        </div>
+                        <div class="matrix-column">
+                            <div class="matrix-header-info">
+                                <span class="m-title"><i data-lucide="trending-up"></i> Inv (20%)</span>
+                                <span class="m-percentage font-mono" id="matrix-p3">R$ 0,00</span>
+                            </div>
+                            <div class="matrix-visual-bar color-emerald"><div class="mv-fill" id="mv-fill-3"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-glassmorph">
+                    <span class="card-tag" style="margin-bottom:1.2rem; display:block;">Nova Transação</span>
+                    <form id="transaction-dispatcher-form" class="premium-form">
+                        <input type="text" id="form-tx-title" placeholder="Descrição do Evento" required>
+                        <div class="input-field-row">
+                            <input type="number" step="0.01" id="form-tx-amount" placeholder="Valor (R$)" required>
+                            <select id="form-tx-type">
+                                <option value="expense">Saída</option>
+                                <option value="income">Entrada</option>
+                            </select>
+                        </div>
+                        <select id="form-tx-category">
+                            <option value="Lazer">Lazer</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Infra">Infraestrutura</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                        <button type="submit" class="btn-action-primary">Processar</button>
+                    </form>
+                </div>
+
+                <!-- INTEGRADO: AGENDADOR DE CONTAS, ASSINATURAS E CENTRAL DE NOTIFICAÇÕES -->
+                <div class="card card-glassmorph">
+                    <div class="card-inner-header">
+                        <span class="card-tag">Compromissos & Assinaturas</span>
+                        <div class="status-pill status-healthy" id="pending-bills-badge">0 Pendentes</div>
+                    </div>
+
+                    <!-- Hub das Notificações Customizadas Avançadas -->
+                    <div id="bill-notifications-zone" style="margin: 1rem 0; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+
+                    <!-- Ledger de Compromissos Agendados -->
+                    <div class="ledger-scroller" style="max-height: 200px; margin-bottom: 1rem;">
+                        <ul class="ledger-list" id="bills-dynamic-list"></ul>
+                    </div>
+
+                    <div class="premium-divider" style="margin: 1rem 0; border-top: 1px dashed rgba(255,255,255,0.08);"></div>
+
+                    <!-- Cadastro Tático de Contas -->
+                    <form id="bill-dispatcher-form" class="premium-form">
+                        <span class="card-tag" style="margin-bottom:0.5rem; display:block; font-size: 0.7rem;">Agendar Novo Compromisso</span>
+                        <input type="text" id="form-bill-title" placeholder="Nome (Ex: Netflix, Conta de Luz)" required>
+                        <div class="input-field-row">
+                            <input type="number" step="0.01" id="form-bill-amount" placeholder="Valor (R$)" required>
+                            <select id="form-bill-type">
+                                <option value="Assinatura">Assinatura</option>
+                                <option value="Luz">Conta de Luz</option>
+                                <option value="Água">Conta de Água</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Cartão">Fatura de Cartão</option>
+                                <option value="Parcelado">Compra Parcelada</option>
+                            </select>
+                        </div>
+                        <div class="input-field-row">
+                            <div style="flex:1;">
+                                <label style="font-size:0.65rem; color:var(--zinc-500); display:block; margin-bottom:2px;">Data de Vencimento</label>
+                                <input type="date" id="form-bill-due" required style="width:100%;">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-action-primary">Agendar Conta</button>
+                    </form>
+                </div>
+
+                <div class="card card-glassmorph" style="margin-bottom: 2rem;">
+                    <span class="card-tag" style="margin-bottom:0.5rem; display:block;">Histórico Recente</span>
+                    
+                    <div class="ledger-filters">
+                        <button class="filter-chip active" data-filter="all">Tudo</button>
+                        <button class="filter-chip" data-filter="Lazer">Lazer</button>
+                        <button class="filter-chip" data-filter="Alimentação">Alimentação</button>
+                        <button class="filter-chip" data-filter="Transporte">Transporte</button>
+                        <button class="filter-chip" data-filter="Infra">Infra</button>
+                    </div>
+
+                    <div class="ledger-scroller">
+                        <ul class="ledger-list" id="ledger-dynamic-list"></ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="view-jarvis" class="view-panel">
+                <div class="assistant-chat-panel-fixed">
+                    <div class="assistant-card-header">
+                        <span class="assistant-name">Jarvis Core</span>
+                        <span class="assistant-status-dot">Online</span>
+                    </div>
+                    <div class="assistant-conversation-log" id="assistant-chat-log">
+                        <div class="chat-bubble bubble-ai">Diretrizes prontas, Alexandre. Qual a consulta do ciclo atual?</div>
+                    </div>
+                    <div class="assistant-card-footer">
+                        <div class="chat-input-wrapper">
+                            <button id="jarvis-voice-btn" class="btn-voice-input" title="Falar comando">
+                                <i data-lucide="mic"></i>
+                            </button>
+                            <input type="text" id="jarvis-user-input" placeholder="Comando ou fale algo..." autocomplete="off">
+                            <button id="jarvis-send-btn"><i data-lucide="send"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-goals" class="view-panel">
+                <div class="card card-glassmorph">
+                    <span class="card-tag" style="margin-bottom: 1.5rem; display:block;">Metas Estratégicas</span>
+                    
+                    <div class="goals-viewport-grid" id="goals-main-viewport"></div>
+
+                    <div class="premium-divider" style="margin: 1.5rem 0; border-top: 1px dashed rgba(255,255,255,0.08);"></div>
+
+                    <form id="form-standalone-goal" class="premium-form">
+                        <span class="card-tag" style="margin-bottom:0.5rem; display:block;">Novo Alvo</span>
+                        <input type="text" id="new-goal-name" placeholder="Objetivo" required>
+                        <div class="input-field-row">
+                            <input type="number" id="new-goal-target" placeholder="Alvo (R$)" required>
+                            <input type="number" id="new-goal-current" placeholder="Inicial" value="0">
+                        </div>
+                        <button type="submit" class="btn-action-primary">Registrar Meta</button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+
+        <nav class="hotbar">
+            <button class="hotbar-item active" id="btn-menu-overview">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Visão Geral</span>
+            </button>
+            
+            <button class="hotbar-item" id="btn-menu-jarvis">
+                <i data-lucide="terminal"></i>
+                <span>Jarvis</span>
+            </button>
+
+            <button class="hotbar-item" id="btn-menu-goals">
+                <i data-lucide="target"></i>
+                <span>Metas</span>
+                <span class="hotbar-badge" id="sidebar-goals-count">0</span>
+            </button>
+        </nav>
+
+        <div class="modal-root-overlay" id="modal-budget-root">
+            <div class="modal-frame">
+                <h3 class="modal-heading">Ajustar Teto</h3>
+                <div class="input-field-group" style="margin-bottom: 1.5rem;">
+                    <input type="number" id="modal-budget-input-field" placeholder="Ex: 4000">
+                </div>
+                <div class="modal-action-row">
+                    <button class="btn-action-secondary" id="btn-cancel-budget-modal">Voltar</button>
+                    <button class="btn-action-primary" id="btn-confirm-budget-modal">Confirmar</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
