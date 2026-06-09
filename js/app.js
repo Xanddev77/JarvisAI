@@ -1166,3 +1166,7 @@ function updateDynamicGreeting() {
     }
     greetingElement.innerText = saudacao;
 }
+function updateInitialBalance(novoValor) {
+    CoreEngine.db.initialBalance = parseFloat(novoValor) || 0;
+    CoreEngine.save(); // Isso salva no localStorage
+}
