@@ -62,6 +62,16 @@ function renderOverviewMetrics() {
         if (tx.type === 'expense') expense += tx.amount;
     });
 
+    // CÁLCULO CORRIGIDO: Saldo = Inicial + Entradas - Saídas
+    // Isso garante que o valor inicial (que você salvou) sempre seja somado
+    const netBalance = CoreEngine.db.initialBalance + income - expense;
+    const ceiling = CoreEngine.db.budgetCeiling;
+
+    document.getElementById("net-balance-value").innerText = `R$ ${netBalance.toFixed(2).replace('.', ',')}`;
+    // ... (restante da função permanece igual)
+}
+
+
     // CÁLCULO CORRIGIDO: Saldo Inicial + Entradas - Saídas
     const netBalance = CoreEngine.db.initialBalance + income - expense;
     const ceiling = CoreEngine.db.budgetCeiling;
