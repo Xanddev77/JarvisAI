@@ -3,7 +3,8 @@
 // ==========================================
 const CoreEngine = {
     db: {
-        budgetCeiling: 0,
+        initialBalance: 0, // Novo campo para persistir o saldo
+        budgetCeiling: 2500,
         transactions: [],
         goals: [],
         bills: []
@@ -13,16 +14,15 @@ const CoreEngine = {
         const localData = localStorage.getItem('jarvis_mobile_db');
         if (localData) {
             this.db = JSON.parse(localData);
-            // Garante que a chave de contas exista caso o banco seja antigo
+            // Migração: se o campo não existir em saves antigos, inicia em 0
+            if (this.db.initialBalance === undefined) this.db.initialBalance = 0;
             if (!this.db.bills) this.db.bills = [];
         } else {
-            // Valores padrão iniciais caso o banco esteja vazio
             this.db = {
+                initialBalance: 0,
                 budgetCeiling: 2500,
                 transactions: [],
-                goals: [
-                    { id: 1, name: "Upgrade Setup (RTX 5060)", target: 3500, current: 1200 }
-                ],
+                goals: [{ id: 1, name: "Upgrade Setup (RTX 5060)", target: 3500, current: 1200 }],
                 bills: []
             };
             this.save();
@@ -49,6 +49,69 @@ const CoreEngine = {
         renderBillsLayout();
     }
 };
+
+// ==========================================
+// RENDERIZADOR DE MÉTRICAS (ATUALIZADO)
+// ==========================================
+function renderOverviewMetrics() {
+    let income = 0;
+    let expense = 0;
+
+    CoreEngine.db.transactions.forEach(tx => {
+        if (tx.type === 'income') income += tx.amount;
+        if (tx.type === 'expense') expense += tx.amount;
+    });
+
+    // CÁLCULO CORRIGIDO: Saldo Inicial + Entradas - Saídas
+    const netBalance = CoreEngine.db.initialBalance + income - expense;
+    const ceiling = CoreEngine.db.budgetCeiling;
+
+    document.getElementById("net-balance-value").innerText = `R$ ${netBalance.toFixed(2).replace('.', ',')}`;
+    document.getElementById("income-total-value").innerText = `R$ ${income.toFixed(2).replace('.', ',')}`;
+    document.getElementById("expense-total-value").innerText = `R$ ${expense.toFixed(2).replace('.', ',')}`;
+    document.getElementById("ceiling-numeric-display").innerText = `R$ ${ceiling.toFixed(2).replace('.', ',')}`;
+
+    const balanceCard = document.getElementById("balance-card");
+    if(balanceCard) {
+        if (netBalance < 0) balanceCard.classList.add("alert-overt");
+        else balanceCard.classList.remove("alert-overt");
+    }
+
+    const fillIndicator = document.getElementById("budget-fill-indicator");
+    const statusPill = document.getElementById("budget-status-pill");
+    const narrativeText = document.getElementById("budget-narrative-text");
+
+    let percentage = ceiling > 0 ? (expense / ceiling) * 100 : 0;
+    if (percentage > 100) percentage = 100;
+
+    if (fillIndicator) {
+        fillIndicator.style.width = `${percentage}%`;
+        if (percentage >= 90) {
+            fillIndicator.classList.add("danger");
+            if (statusPill) { statusPill.className = "status-pill status-danger"; statusPill.innerText = "CRÍTICO"; }
+            if (narrativeText) narrativeText.innerText = "Teto quase atingido";
+        } else {
+            fillIndicator.classList.remove("danger");
+            if (statusPill) { statusPill.className = "status-pill status-healthy"; statusPill.innerText = "OK"; }
+            if (narrativeText) narrativeText.innerText = "Sincronizado";
+        }
+    }
+
+    const baseCalculo = income > 0 ? income : 0;
+    document.getElementById("matrix-p1").innerText = `R$ ${(baseCalculo * 0.5).toFixed(2).replace('.', ',')}`;
+    document.getElementById("matrix-p2").innerText = `R$ ${(baseCalculo * 0.3).toFixed(2).replace('.', ',')}`;
+    document.getElementById("matrix-p3").innerText = `R$ ${(baseCalculo * 0.2).toFixed(2).replace('.', ',')}`;
+
+    document.getElementById("mv-fill-1").style.width = income > 0 ? '50%' : '0%';
+    document.getElementById("mv-fill-2").style.width = income > 0 ? '30%' : '0%';
+    document.getElementById("mv-fill-3").style.width = income > 0 ? '20%' : '0%';
+}
+
+// Nova função utilitária para chamar quando você atualizar o valor do saldo no HTML
+function updateInitialBalance(val) {
+    CoreEngine.db.initialBalance = parseFloat(val) || 0;
+    CoreEngine.save();
+}
 
 // ==========================================
 // ARQUITETURA DE ROTEAMENTO (VIEW ROUTER)
